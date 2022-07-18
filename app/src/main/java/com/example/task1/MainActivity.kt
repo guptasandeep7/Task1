@@ -25,26 +25,18 @@ class MainActivity : AppCompatActivity() {
         segmentAdapter.setOnItemClickListener(object : SegmentAdapter.OnItemClickListener {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onItemClick(seekBar: SeekBar, holder: SegmentAdapter.ViewHolder) {
-
                 seekBar.progress.let {
                     when {
                         it == seekBar.min -> {
                             if (holder.adapterPosition == 0) {
                                 segmentAdapter.clearAll()
                             } else {
-                                segmentAdapter.removeSegment(holder.adapterPosition)
+                                segmentAdapter.removeSegment(holder.adapterPosition,seekBar.max)
                             }
                         }
 
                         (seekBar.max - it) > 1 && (it - seekBar.min) > 0 -> {
-                            segmentAdapter.addSegment(
-                                Segment(
-                                    it + 1,
-                                    seekBar.max
-                                ),
-                                holder.adapterPosition + 1
-                            )
-
+                            segmentAdapter.addSegment(Segment(it + 1,seekBar.max),holder.adapterPosition + 1)
                             holder.binding.endTv.text = (it).toString()
                             seekBar.max = it
                         }

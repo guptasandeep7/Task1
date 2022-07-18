@@ -1,10 +1,14 @@
 package com.example.task1.adapter
 
+import android.content.res.Resources
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.annotation.RequiresApi
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import androidx.core.content.ContextCompat.getDrawable
+import androidx.core.content.res.ResourcesCompat.getDrawable
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.task1.R
@@ -50,13 +54,23 @@ class SegmentAdapter : RecyclerView.Adapter<SegmentAdapter.ViewHolder>() {
 
         holder.binding.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
-            override fun onProgressChanged(p0: SeekBar?, value: Int, p2: Boolean) {
+            override fun onProgressChanged(seekBar: SeekBar?, value: Int, p2: Boolean) {
                 holder.binding.endTv.text = value.toString()
+                if (value == seekBar?.min) {
+                    holder.binding.endTv.foreground =
+                        holder.itemView.resources.getDrawable(R.drawable.ic_delete_24)
+                } else {
+                    holder.binding.endTv.foreground = null
+                }
             }
 
-            override fun onStartTrackingTouch(p0: SeekBar?) {}
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+                holder.binding.startTv.foreground =
+                    holder.itemView.resources.getDrawable(R.drawable.ic_delete_24)
+            }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                holder.binding.startTv.foreground = null
                 seekBar?.let { mlistener?.onItemClick(it, holder) }
             }
         })
@@ -73,12 +87,12 @@ class SegmentAdapter : RecyclerView.Adapter<SegmentAdapter.ViewHolder>() {
 
     fun clearAll() {
         segmentList.clear()
-        segmentList.add(Segment(1,100))
+        segmentList.add(Segment(1, 100))
         notifyDataSetChanged()
     }
 
-    fun removeSegment(position: Int) {
-        segmentList[position - 1].endValue = segmentList[position].endValue
+    fun removeSegment(position: Int, max: Int) {
+        segmentList[position - 1].endValue = max
         notifyItemChanged(position - 1)
         segmentList.removeAt(position)
         notifyItemRemoved(position)
