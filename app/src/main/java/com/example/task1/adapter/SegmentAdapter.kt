@@ -77,8 +77,8 @@ class SegmentAdapter : RecyclerView.Adapter<SegmentAdapter.ViewHolder>() {
         return segmentList.size
     }
 
-    fun initSegment(segmentList: MutableList<Segment>) {
-        this.segmentList = segmentList
+    fun initSegment(segmentList: List<Segment>) {
+        this.segmentList = segmentList.toMutableList()
         notifyDataSetChanged()
     }
 
@@ -100,6 +100,10 @@ class SegmentAdapter : RecyclerView.Adapter<SegmentAdapter.ViewHolder>() {
         notifyItemChanged(position - 1)
         segmentList.removeAt(position)
         notifyItemRemoved(position)
+    }
+
+    fun getSegmentList(): MutableList<Segment> {
+        return segmentList
     }
 
 

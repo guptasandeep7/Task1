@@ -1,7 +1,12 @@
 package com.example.task1.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "segment_table")
 data class Segment(
-    val startValue: Int,
-    var endValue: Int,
-    var color: Int
+    @PrimaryKey @ColumnInfo(name = "start") val startValue: Int,
+    @ColumnInfo(name = "end") var endValue: Int,
+    @ColumnInfo(name = "color") var color: Int
 )

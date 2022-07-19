@@ -5,31 +5,35 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.task1.R
+import com.example.task1.application.SegmentApplication
 import com.example.task1.adapter.SegmentAdapter
 import com.example.task1.model.Segment
+import com.example.task1.viewmodel.SegmentViewModel
+import com.example.task1.viewmodel.SegmentViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
     private val segmentAdapter = SegmentAdapter()
-    private val segmentList = mutableListOf<Segment>()
+
+    private val segmentViewModel: SegmentViewModel by viewModels {
+        SegmentViewModelFactory((application as SegmentApplication).repository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val recyclerView = findViewById<RecyclerView>(R.id.seekbar_rv)
-
-        segmentList.add(Segment(1, 32, Color.parseColor("#EF5350")))
-        segmentList.add(Segment(33, 56, Color.parseColor("#FFA726")))
-        segmentList.add(Segment(57, 85, Color.parseColor("#29B6F6")))
-        segmentList.add(Segment(86, 100, Color.parseColor("#66BB6A")))
-
-        segmentAdapter.initSegment(segmentList)
         recyclerView.adapter = segmentAdapter
+
+        segmentViewModel.getAllSegments.observe(this) {
+            segmentAdapter.initSegment(it)
+        }
 
         segmentAdapter.setOnItemClickListener(object : SegmentAdapter.OnItemClickListener {
             @RequiresApi(Build.VERSION_CODES.O)
@@ -63,4 +67,11 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
+
+    override fun onStop() {
+        super.onStop()
+        segmentViewModel.deleteAll()   // Delete old Segment List
+        segmentViewModel.insertAll(segmentAdapter.getSegmentList())    // Insert new Segment List
+    }
+
 }
