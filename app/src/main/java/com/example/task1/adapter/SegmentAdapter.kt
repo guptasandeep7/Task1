@@ -1,14 +1,11 @@
 package com.example.task1.adapter
 
-import android.content.res.Resources
+import android.graphics.Color
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.annotation.RequiresApi
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.core.content.ContextCompat.getDrawable
-import androidx.core.content.res.ResourcesCompat.getDrawable
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.task1.R
@@ -17,7 +14,7 @@ import com.example.task1.model.Segment
 
 class SegmentAdapter : RecyclerView.Adapter<SegmentAdapter.ViewHolder>() {
 
-    private var segmentList = mutableListOf(Segment(1, 100))
+    private var segmentList = mutableListOf<Segment>()
     private var mlistener: OnItemClickListener? = null
 
     interface OnItemClickListener {
@@ -80,14 +77,21 @@ class SegmentAdapter : RecyclerView.Adapter<SegmentAdapter.ViewHolder>() {
         return segmentList.size
     }
 
+    fun initSegment(segmentList: MutableList<Segment>) {
+        this.segmentList = segmentList
+        notifyDataSetChanged()
+    }
+
     fun addSegment(segment: Segment, position: Int) {
+        val color = segmentList[position - 1].color
+        segment.color = color
         segmentList.add(position, segment)
         notifyItemInserted(position)
     }
 
     fun clearAll() {
         segmentList.clear()
-        segmentList.add(Segment(1, 100))
+        segmentList.add(Segment(1, 100,Color.RED))
         notifyDataSetChanged()
     }
 
